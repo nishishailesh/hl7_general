@@ -1,0 +1,20 @@
+.:
+total 380
+-rw-r--r-- 1 root root    110 Jul 28 23:19 bidirectional_general_conf.py
+-rw-r--r-- 1 root root 311390 Jul 28 23:46 bidirectional_general.log
+-rwxr-xr-x 1 root root   9111 Jul 28 23:34 bidirectional_general.py
+-rw-r--r-- 1 root root      0 Jul 29 13:39 file.details
+-rwxr-xr-x 1 root root   1213 Jul 28 23:46 hl7_general.py
+-rw-r--r-- 1 root root  35149 Jul 29 13:32 LICENSE
+-rw-r--r-- 1 root root     33 Jul 29 13:32 README.md
+-rwxr-xr-x 1 root root    109 Jul 29 13:39 update_hl7_general.sh
+drwxr-xr-x 2 root root   4096 Jul 29 13:35 utility
+
+utility:
+total 24
+-rwxr-xr-x 1 root root 159 Jul 29 13:35 COPY_SERVICE.sh
+-rwxr-xr-x 1 root root 248 Jul 28 23:08 hl7_general_read.service
+-rwxr-xr-x 1 root root 230 Jul 28 23:08 hl7_general_write.service
+-rwxr-xr-x 1 root root 142 Jul 29 13:35 INSTALL_SERVICE.sh
+-rwxr-xr-x 1 root root 146 Jul 29 13:35 mk_folders
+-rwxr-xr-x 1 root root 166 Jul 28 23:08 reset_everything.sh
