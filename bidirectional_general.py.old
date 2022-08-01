@@ -57,8 +57,8 @@ class bdg(object):
         self.write_msg='' #not in astm. because status 
       except Exception as my_ex :
         print_to_log("Disconnection from client?",my_ex)                    
-      #self.write_set.remove(self.conn[0])                   #now no message pending, so remove it from write set
-      #self.error_set=self.read_set.union(self.write_set)    #update error set
+      self.write_set.remove(self.conn[0])                   #now no message pending, so remove it from write set
+      self.error_set=self.read_set.union(self.write_set)    #update error set
 
   
   ###################################
@@ -104,8 +104,6 @@ class bdg(object):
       self.conn = self.s.accept()
       print_to_log(self.s,'Connection request is read')  
       self.conn[0].setblocking(0)    
- 
- 
       
   def loop(self):
     #First set
@@ -125,7 +123,7 @@ class bdg(object):
       #self.print_to_log('','before select')
       self.readable, self.writable, self.exceptional = select.select(self.read_set,self.write_set,self.error_set,self.select_timeout)
       #self.print_to_log('','after select')
-      #self.list_wait()
+      self.list_wait()
       ###if anybody else try to connect, reject it
 
       if(self.s in self.exceptional):
@@ -203,8 +201,8 @@ class bdg(object):
           self.read_set.add(self.conn[0])
           self.error_set=self.read_set.union(self.write_set)
 
-      time.sleep(0.5)
-      #self.initiate_write()  
+      #time.sleep(0.1)
+      self.initiate_write()  
 
 #Main Code###############################
 #use this to device your own script
