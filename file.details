@@ -3,7 +3,7 @@ total 88
 -rw-r--r-- 1 root root   110 Aug  1 10:39 bidirectional_general_conf.py
 -rwxr-xr-x 1 root root  9481 Aug  1 10:39 bidirectional_general.py
 -rw-r--r-- 1 root root  9474 Aug  1 10:39 bidirectional_general.py.old
--rw-r--r-- 1 root root     0 Aug  1 10:40 file.details
+-rw-r--r-- 1 root root     0 Aug  1 10:41 file.details
 -rwxr-xr-x 1 root root   931 Aug  1 10:39 hl7_client.py
 -rwxr-xr-x 1 root root  2141 Aug  1 10:39 hl7_general.py
 -rw-r--r-- 1 root root 35149 Aug  1 10:39 LICENSE
