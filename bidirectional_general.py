@@ -37,40 +37,22 @@ class bdg(object):
   #override this function in subclass, it donot read data, just manages it after getting data from loop
   ###################################
   def manage_read(self,data):
-    #self.write_set.add(self.conn[0])                      #Add in write set, for next select() to make it writable
-    #self.error_set=self.read_set.union(self.write_set)    #update error set
-    #demo reply for apple and pineapple, use socat - tcp:127.0.0.1:2576
-    if(data==b'pineapple\n'):
-      self.write_msg=b'Demo manage_read() override me. \033[1;33mpinapple is yellow\033[0m\n'  
-    if(data==b'apple\n'):
-      self.write_msg=b'Demo manage_read() override me. \033[1;31mapple is Red\033[0m\n' 
+    print_to_log("bdg::loop()->bdg::manage_read():",data)
+    self.write_msg=b"bdg::manage_read():"+data
   
   ###################################
   #override this function in subclass, it actually sends data
   ###################################
   def manage_write(self):      
-    #Send message in response to write_set->select->writable initiated by manage_read() and initiate_write()
+    print_to_log('bdg::loop->bdg::manage_write():','')       
     if(len(self.write_msg)>0):
-      print_to_log('Following will be sent',self.write_msg) 
+      print_to_log('bdg::manage_write():Following will be sent',self.write_msg) 
       try:
         self.conn[0].send(self.write_msg)
-        self.write_msg='' #not in astm. because status 
+        self.write_msg=''  
       except Exception as my_ex :
         print_to_log("Disconnection from client?",my_ex)                    
-      #self.write_set.remove(self.conn[0])                   #now no message pending, so remove it from write set
-      #self.error_set=self.read_set.union(self.write_set)    #update error set
-
-  
-  ###################################
-  #override this function in subclass , generally not required, unless status change needs to be monitored
-  ###################################
-  def initiate_write(self):
-    self.write_set.add(self.conn[0])                      #Add in write set, for next select() to make it writable
-    self.error_set=self.read_set.union(self.write_set)    #update error set
-    if(len(self.write_msg)==0):
-      self.write_msg=b'Demo initiate_write() override me. send apple, pineapple \n' #set message
-    time.sleep(1)	#This is demo function. It will write a lot. So, better to pause a bit
-          
+         
   def __init__(self,host_address,host_port,select_timeout):
     #logging.basicConfig(filename=conf.log_filename,level=logging.CRITICAL)
     #logging.basicConfig(filename=conf.log_filename,level=logging.DEBUG)
@@ -102,30 +84,26 @@ class bdg(object):
       quit() 
     if(self.s in self.readable):
       self.conn = self.s.accept()
-      print_to_log(self.s,'Connection request is read')  
+      print_to_log(self.s,'Connection request is read')
+
+      #Housekeeping read_set etc. after new connection
       self.conn[0].setblocking(0)    
- 
- 
+      
+      self.read_set={self.s,self.conn[0]}
+      self.write_set=set()  #must be managed when send is required, otherwise use 100% CPU to check writable buffer      
+      self.write_set.add(self.conn[0])                      #Add in write set, for next select() to make it writable
+      
+      self.error_set=self.read_set.union(self.write_set)    #update error set
       
   def loop(self):
     #First set
     #not tuple it is unmutable
     #not list, we need uniq values in error list which is sum of read and write
-    
-    
-    self.read_set={self.s,self.conn[0]}
-    self.write_set=set()  #must be managed when send is required, otherwise use 100% CPU to check writable buffer
-    
-    self.write_set.add(self.conn[0])                      #Add in write set, for next select() to make it writable
-    self.error_set=self.read_set.union(self.write_set)    #update error set
-    
-    self.error_set=self.read_set.union(self.write_set)
-    
     while True:      
       #self.print_to_log('','before select')
       self.readable, self.writable, self.exceptional = select.select(self.read_set,self.write_set,self.error_set,self.select_timeout)
       #self.print_to_log('','after select')
-      #self.list_wait()
+      self.list_wait()
       ###if anybody else try to connect, reject it
 
       if(self.s in self.exceptional):
@@ -199,12 +177,17 @@ class bdg(object):
           #3) Accept new, add to read set, this is blocking here. No need to go for initiate_write, because nothing to do
           self.conn = self.s.accept()
           print_to_log(self.s,'New Connection request is read')  
-          self.conn[0].setblocking(0)
-          self.read_set.add(self.conn[0])
-          self.error_set=self.read_set.union(self.write_set)
-
+          
+          #Housekeeping read_set etc. after new connection
+          self.conn[0].setblocking(0)    
+          
+          self.read_set={self.s,self.conn[0]}
+          self.write_set=set()  #must be managed when send is required, otherwise use 100% CPU to check writable buffer      
+          self.write_set.add(self.conn[0])                      #Add in write set, for next select() to make it writable
+          
+          self.error_set=self.read_set.union(self.write_set)    #update error set
+      
       time.sleep(0.5)
-      #self.initiate_write()  
 
 #Main Code###############################
 #use this to device your own script

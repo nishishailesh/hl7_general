@@ -14,11 +14,12 @@ class hl7(bdg):
     signal.signal(signal.SIGALRM, self.signal_handler)
 
   def manage_read(self,data):
-    #self.write_set.add(self.conn[0])                      #Add in write set, for next select() to make it writable
-    #self.error_set=self.read_set.union(self.write_set)    #update error set
-    #demo reply for apple and pineapple, use socat - tcp:127.0.0.1:2576
     print_to_log("hl7::manage_read():",data)
-    self.write_msg=data[0:5]
+    if(self.is_received_data_MLLP(data)):
+      self.write_msg=b'Received data is MLLP'
+    else:
+      self.write_msg=b'Error: >>>>Received data is NOT MLLP'
+    print_to_log('hl7::manage_read(): sending...',self.write_msg)       
 
   def manage_write(self):
     print_to_log('hl7::manage_write():','I am called by loop()')       
@@ -30,14 +31,24 @@ class hl7(bdg):
         self.write_msg='' #not in astm. because status 
       except Exception as my_ex :
         print_to_log("Disconnection from client?",my_ex)                    
-      #self.write_set.remove(self.conn[0])                   #now no message pending, so remove it from write set
-      #self.error_set=self.read_set.union(self.write_set)    #update error set
-
 
   def signal_handler(self,signal, frame):
     print_to_log('Alarm Stopped','Signal:{} Frame:{}'.format(signal,frame))
     print_to_log('Alarm..response NOT received in stipulated time','data receving/sending may be incomplate')
 
+
+  def is_received_data_MLLP(self,data):
+    #MESSAGE=b"\x0bMSH|^~\&|ADT1|MCM|FINGER|MCM|198808181126|SECURITY|ADT^A01|MSG00001|P|2.3.1\x0dPID|1||PATID1234^5^M11^ADT1^MR^MCM~123456789^^^USSSA^SS||\x1c\x0d"
+    start_byte=data[0:1]
+    end_bytes=data[len(data)-2:]
+    print_to_log(b"required start byte is \x0b , data start bye is:",start_byte)
+    print_to_log(b"required two end bytes are \x1c\x0d , data end two byes are is:",end_bytes)
+    if((start_byte,end_bytes)==(b'\x0b',b'\x1c\x0d')):
+      print_to_log((start_byte,end_bytes) , (start_byte,end_bytes))
+      return True
+    return False
+
+    
 if __name__=='__main__':
   logging.basicConfig(filename=conf.log_filename,level=logging.DEBUG,format='%(asctime)s : %(message)s') 
 
