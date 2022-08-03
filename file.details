@@ -5,7 +5,7 @@ total 2800
 -rwxr-xr-x 1 root root    8547 Aug  3 18:30 bidirectional_general.py
 -rwxr-xr-x 1 root root    9113 Aug  3 18:30 bidirectional_general.py.best.original
 -rw-r--r-- 1 root root    9474 Aug  3 18:30 bidirectional_general.py.old
--rw-r--r-- 1 root root       0 Aug  3 18:30 file.details
+-rw-r--r-- 1 root root       0 Aug  3 18:31 file.details
 -rw-r--r-- 1 root root    2434 Aug  3 18:30 file_management_lis.py
 -rwxr-xr-x 1 root root    1167 Aug  3 18:30 hl7_client.py
 -rwxr-xr-x 1 root root    4916 Aug  3 18:30 hl7_general.py
