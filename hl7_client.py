@@ -9,9 +9,10 @@ def signal_handler(signal, frame):
   print('signal_handler() is called')
    
 def read_input():
-  data=input('0. Exit\
-  1. Send hello message\
-  2.send hl7 message')
+  data=input('  0. Exit\n\
+  1. Send hello message\n\
+  2. Send hl7 message\n\
+  input number:')
   return data
   
 while True:
